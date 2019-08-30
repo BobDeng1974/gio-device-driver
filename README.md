@@ -1,2 +1,3 @@
 # gio-device-driver
-Microservice that handles the connection to an IoT device. It exposes an interface to query all the data that the device produces.
+Microservice that reads data from the Giò Plants Fog Node software installed on the machine, applying filters and
+forwarding it to the Giò Device service.
