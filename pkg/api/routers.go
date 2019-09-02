@@ -62,7 +62,7 @@ var routes = Routes{
 	Route{
 		"TriggerAction",
 		[]string{http.MethodPost},
-		"/devices/{deviceId}/action/{actionName}",
+		"/devices/{deviceId}/actions/{actionName}",
 		TriggerAction,
 	},
 }

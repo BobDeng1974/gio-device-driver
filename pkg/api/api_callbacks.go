@@ -13,8 +13,6 @@ import (
 // This is the implementation of the webhook for readings notifications
 // This function is called when the FogNode creates a new Reading and notify this driver by an http call.
 func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
-	log.Println("Callback Called!")
-
 	var data service.CallbackResponseData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
@@ -22,13 +20,11 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Data received: %v\n", data)
-
 	// Process data
 	processed := processData(data)
 
 	if processed == nil {
-		errorHandler(w, http.StatusBadRequest, fmt.Sprintf("characteristinc not recognised: %s", data.Reading.Name))
+		errorHandler(w, http.StatusBadRequest, fmt.Sprintf("characteristic not recognised: %s", data.Reading.Name))
 		return
 	}
 
@@ -58,8 +54,6 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-
-	log.Println("Data sent successfully")
 }
 
 func processData(data service.CallbackResponseData) *model.Reading {
