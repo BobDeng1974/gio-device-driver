@@ -31,6 +31,7 @@ var SmartVaseCharacteristics = [...]BLECharacteristic{
 		Name: "light",
 		Process: func(reading *model.Reading) *model.Reading {
 			reading.Value = reading.Value[1 : len(reading.Value)-1]
+			reading.Name = "light"
 			return reading
 		},
 	},
@@ -39,6 +40,7 @@ var SmartVaseCharacteristics = [...]BLECharacteristic{
 		Name: "temperature",
 		Process: func(reading *model.Reading) *model.Reading {
 			reading.Value = reading.Value[1 : len(reading.Value)-1]
+			reading.Name = "temperature"
 			return reading
 		},
 	},
@@ -47,6 +49,7 @@ var SmartVaseCharacteristics = [...]BLECharacteristic{
 		Name: "moisture",
 		Process: func(reading *model.Reading) *model.Reading {
 			reading.Value = reading.Value[1 : len(reading.Value)-1]
+			reading.Name = "moisture"
 			return reading
 		},
 	},
