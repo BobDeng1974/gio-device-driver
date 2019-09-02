@@ -18,17 +18,20 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 
 	device, err := srv.GetDevice(deviceId)
 	if err != nil {
+		log.Printf("Cannot get device with ID %s: %s\n", deviceId, err.Error())
 		errorHandler(w, http.StatusNotFound, err.Error())
 		return
 	}
 
 	if device == nil {
+		log.Printf("Device %s not found!", deviceId)
 		errorHandler(w, http.StatusNotFound, "device not found")
 		return
 	}
 
 	err = srv.TriggerAction(device, actionName)
 	if err != nil {
+		log.Printf("Cannot perform action %s\n", actionName)
 		errorHandler(w, http.StatusBadRequest, err.Error())
 		return
 	}
