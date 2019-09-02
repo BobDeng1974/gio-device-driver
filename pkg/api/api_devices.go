@@ -39,6 +39,8 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Printf("Action UUID found: %s\n", actionUUID)
+
 	err = srv.TriggerAction(device, actionUUID)
 	if err != nil {
 		log.Printf("Cannot perform action %s (UUID: %s)\n", actionName, actionUUID)
