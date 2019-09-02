@@ -1,7 +1,7 @@
 package devices
 
 import (
-	"gio-device-driver/cmd/pkg/model"
+	"gio-device-driver/pkg/model"
 )
 
 type BLEService struct {

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gio-device-driver/cmd/pkg/model"
+	"gio-device-driver/pkg/model"
 	"log"
 	"net/http"
 	"net/url"

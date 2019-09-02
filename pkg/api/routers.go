@@ -2,8 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"gio-device-driver/cmd/pkg/logging"
-	"gio-device-driver/cmd/pkg/model"
+	"gio-device-driver/pkg/logging"
+	"gio-device-driver/pkg/model"
 	"log"
 	"net/http"
 

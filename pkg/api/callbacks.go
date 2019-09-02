@@ -3,9 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"gio-device-driver/cmd/pkg/devices"
-	"gio-device-driver/cmd/pkg/model"
-	"gio-device-driver/cmd/pkg/service"
+	"gio-device-driver/pkg/devices"
+	"gio-device-driver/pkg/model"
+	"gio-device-driver/pkg/service"
 	"log"
 	"net/http"
 )
@@ -59,7 +59,7 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 func processData(data service.CallbackResponseData) *model.Reading {
 	// Check SmartVase characteristics
 	for _, char := range devices.SmartVaseCharacteristics {
-		if char.UUID == data.Reading.ID {
+		if char.UUID == data.Reading.Name {
 			return char.Process(&data.Reading)
 		}
 	}
