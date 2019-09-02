@@ -14,6 +14,8 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	deviceId := vars["deviceId"]
 	actionName := vars["actionName"]
 
+	log.Printf("Requesting triggering for action %s on device %s\n", actionName, deviceId)
+
 	srv, _ := service.NewFogNode()
 
 	device, err := srv.GetDevice(deviceId)
@@ -48,5 +50,5 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	log.Println("Data sent successfully")
+	log.Println("Action performed successfully")
 }
