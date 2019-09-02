@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 func main() {
@@ -33,12 +34,25 @@ func main() {
 }
 
 func registerService(host string, port int) {
-	callbackUuid, err := registerCallback(host, port)
-	if err != nil {
-		panic(err)
+	retries := 10
+
+	for retries > 0 {
+		log.Printf("Try to register to FogNode (trial: %s)\n", retries)
+		callbackUuid, err := registerCallback(host, port)
+		if err == nil {
+			log.Printf("Callback UUID: %s", callbackUuid)
+			return
+		}
+
+		log.Println(err)
+
+		retries--
+
+		// Sleep before try again
+		time.Sleep(5 * time.Second)
 	}
 
-	log.Printf("Callback UUID: %s", callbackUuid)
+	panic("Cannot register to FogNode!")
 }
 
 func registerCallback(host string, port int) (string, error) {
