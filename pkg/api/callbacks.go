@@ -26,6 +26,11 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 	// Process data
 	processed := processData(data)
 
+	if processed == nil {
+		errorHandler(w, http.StatusBadRequest, fmt.Sprintf("characteristinc not recognised: %s", data.Reading.Name))
+		return
+	}
+
 	// Send data to Device Service
 	srv, _ := service.NewDeviceService()
 
