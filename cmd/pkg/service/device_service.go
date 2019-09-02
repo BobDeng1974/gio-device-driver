@@ -20,7 +20,6 @@ type DeviceService struct {
 }
 
 func (ds *DeviceService) Register(id string, roomName string) (*model.GioDevice, error) {
-
 	// Create the room
 	roomData := model.Room{
 		Name: roomName,

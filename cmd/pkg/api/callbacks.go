@@ -15,7 +15,8 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 	var data service.CallbackResponseData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		errorHandler(w, http.StatusOK, err.Error())
+		errorHandler(w, http.StatusInternalServerError, "invalid data")
+		return
 	}
 
 	log.Printf("Data received: %s\n", data)

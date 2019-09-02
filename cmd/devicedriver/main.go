@@ -21,14 +21,7 @@ func main() {
 
 	flag.Parse()
 
-	go func() {
-		callbackUuid, err := registerCallback(*host, *port)
-		if err != nil {
-			panic(err)
-		}
-
-		log.Printf("Callback UUID: %s", callbackUuid)
-	}()
+	go registerService(*host, *port)
 
 	log.Printf("Server started on port %d", *port)
 
@@ -37,6 +30,15 @@ func main() {
 	p := fmt.Sprintf(":%d", *port)
 
 	log.Fatal(http.ListenAndServe(p, router))
+}
+
+func registerService(host string, port int) {
+	callbackUuid, err := registerCallback(host, port)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("Callback UUID: %s", callbackUuid)
 }
 
 func registerCallback(host string, port int) (string, error) {
