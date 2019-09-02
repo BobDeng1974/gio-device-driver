@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"gio-device-driver/pkg/devices"
 	"gio-device-driver/pkg/model"
 	"gio-device-driver/pkg/service"
 	"github.com/gorilla/mux"
@@ -32,10 +33,10 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get action UUID
-	actionUUID := findActionUUID(device, actionName)
+	actionUUID := findActionUUID(actionName)
 	if actionUUID == "" {
 		log.Printf("Action not recognised %s\n", actionName)
-		errorHandler(w, http.StatusBadRequest, err.Error())
+		errorHandler(w, http.StatusBadRequest, "action not recognised")
 		return
 	}
 
@@ -64,8 +65,8 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 }
 
 // Get the UUID of the action with a given name
-func findActionUUID(device *model.FogNodeDevice, actionName string) string {
-	for _, char := range device.Characteristics {
+func findActionUUID(actionName string) string {
+	for _, char := range devices.SmartVaseCharacteristics {
 		if actionName == char.Name {
 			return char.UUID
 		}
