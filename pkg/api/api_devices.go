@@ -31,9 +31,17 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = srv.TriggerAction(device, actionName)
+	// get action UUID
+	actionUUID := findActionUUID(device, actionName)
+	if actionUUID == "" {
+		log.Printf("Action not recognised %s\n", actionName)
+		errorHandler(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = srv.TriggerAction(device, actionUUID)
 	if err != nil {
-		log.Printf("Cannot perform action %s\n", actionName)
+		log.Printf("Cannot perform action %s (UUID: %s)\n", actionName, actionUUID)
 		errorHandler(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -51,4 +59,15 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Action performed successfully")
+}
+
+// Get the UUID of the action with a given name
+func findActionUUID(device *model.FogNodeDevice, actionName string) string {
+	for _, char := range device.Characteristics {
+		if actionName == char.Name {
+			return char.UUID
+		}
+	}
+
+	return ""
 }
