@@ -95,13 +95,13 @@ func (ds *DeviceService) SendData(device *model.GioDevice, reading *model.Readin
 	return nil
 }
 
-var instance *DeviceService = nil
+var deviceServiceInstance *DeviceService = nil
 
 func NewDeviceService() (*DeviceService, error) {
 	serviceHost := os.Getenv("DEVICE_SERVICE_HOST")
 	servicePort := os.Getenv("DEVICE_SERVICE_PORT")
 
-	if instance == nil {
+	if deviceServiceInstance == nil {
 		u := fmt.Sprintf("http://%s:%s", serviceHost, servicePort)
 		log.Printf("DeviceService URL: %s\n", u)
 
@@ -109,8 +109,8 @@ func NewDeviceService() (*DeviceService, error) {
 		if err != nil {
 			return nil, err
 		}
-		instance = &DeviceService{serviceUrl}
+		deviceServiceInstance = &DeviceService{serviceUrl}
 	}
 
-	return instance, nil
+	return deviceServiceInstance, nil
 }

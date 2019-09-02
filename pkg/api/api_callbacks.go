@@ -11,6 +11,7 @@ import (
 )
 
 // This is the implementation of the webhook for readings notifications
+// This function is called when the FogNode creates a new Reading and notify this driver by an http call.
 func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 	log.Println("Callback Called!")
 

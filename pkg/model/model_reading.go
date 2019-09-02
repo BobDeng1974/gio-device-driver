@@ -18,3 +18,14 @@ type Room struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+type FogNodeDevice struct {
+	ID              string              `json:"id"`
+	Name            string              `json:"name"`
+	Characteristics []BLECharacteristic `json:"characteristics"`
+}
+
+type BLECharacteristic struct {
+	UUID string `json:"uuid"`
+	Name string `json:"name"`
+}

@@ -21,7 +21,7 @@ const (
 	CallbackEndpointPath = "/callbacks/readings"
 )
 
-func errorHandler(w http.ResponseWriter, status int32, message string) {
+func errorHandler(w http.ResponseWriter, status int, message string) {
 	r := model.ApiResponse{Code: status, Message: message}
 	w.WriteHeader(int(status))
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -56,5 +56,13 @@ var routes = Routes{
 		[]string{http.MethodPost},
 		CallbackEndpointPath,
 		OnReadingCreated,
+	},
+
+	// Trigger for actions
+	Route{
+		"TriggerAction",
+		[]string{http.MethodPost},
+		"/devices/{deviceId}/action/{actionName}",
+		TriggerAction,
 	},
 }
