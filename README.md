@@ -47,3 +47,25 @@ docker run -it --port 5004:8080 gio-device-driver:latest
 ## REST API
 
 - POST /callbacks/readings: callback endpoint. Called by the gio-fog-node tools to notify the creation of a new reading.
+
+    Example body:
+    
+  ```json
+  {
+    "peripheral_id": "xx:xx:xx:xx",
+    "reading": {
+      "name": "temperature",
+      "value": "23",
+      "unit": "C°"
+    }
+  }
+  ```
+
+    Example response:
+    
+     ```json
+      {
+        "status": 200,
+        "message": "Done"
+      }
+     ```

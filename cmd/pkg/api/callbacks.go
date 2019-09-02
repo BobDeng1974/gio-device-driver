@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"gio-device-driver/cmd/pkg/model"
 	"gio-device-driver/cmd/pkg/service"
 	"log"
 	"net/http"
@@ -19,7 +20,7 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Data received: %s\n", data)
+	log.Printf("Data received: %v\n", data)
 
 	// Send data to Device Service
 	srv, _ := service.NewDeviceService()
@@ -36,6 +37,17 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Data sent successfully")
 	w.WriteHeader(http.StatusOK)
+
+	m := model.ApiResponse{
+		Code:    http.StatusOK,
+		Message: "Done",
+	}
+
+	err = json.NewEncoder(w).Encode(m)
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("Data sent successfully")
 }
