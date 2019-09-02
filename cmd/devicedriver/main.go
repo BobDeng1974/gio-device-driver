@@ -24,7 +24,7 @@ func main() {
 
 	go registerService(*host, *port)
 
-	log.Printf("Server started on port %d", *port)
+	log.Printf("Server started on port %d\n", *port)
 
 	router := api.NewRouter()
 
@@ -37,10 +37,10 @@ func registerService(host string, port int) {
 	retries := 10
 
 	for retries > 0 {
-		log.Printf("Try to register to FogNode (trial: %s)\n", retries)
+		log.Printf("Try to register to FogNode (trial: %d)\n", retries)
 		callbackUuid, err := registerCallback(host, port)
 		if err == nil {
-			log.Printf("Callback UUID: %s", callbackUuid)
+			log.Printf("Callback UUID: %s\n", callbackUuid)
 			return
 		}
 
@@ -59,10 +59,9 @@ func registerCallback(host string, port int) (string, error) {
 	fogNodeHost := os.Getenv("FOG_NODE_HOST")
 	fogNodePort := os.Getenv("FOG_NODE_PORT")
 
-	u := fmt.Sprintf("http://%s:%s", fogNodeHost, fogNodePort)
-	log.Printf("FogNode URL: %s\n", u)
+	fogNodeUrl := fmt.Sprintf("http://%s:%s", fogNodeHost, fogNodePort)
 
-	_, err := url.Parse(u)
+	_, err := url.Parse(fogNodeUrl)
 	if err != nil {
 		return "", err
 	}
@@ -76,15 +75,22 @@ func registerCallback(host string, port int) (string, error) {
 
 	dataJson, _ := json.Marshal(callbackData)
 
-	registrationUrl := fmt.Sprintf("%s/callbacks", u)
+	registrationUrl := fmt.Sprintf("%s/callbacks", fogNodeUrl)
+
+	log.Printf("FogNode URL: %s\n", fogNodeUrl)
+	log.Printf("callbackUrl: %s\n", callbackUrl)
+	log.Printf("registrationUrl: %s\n", registrationUrl)
+
 	registrationResp, err := http.Post(registrationUrl, "application/json", bytes.NewBuffer(dataJson))
 	if err != nil {
+		log.Printf("Error while registrering device: %s\n", err)
 		return "", err
 	}
 
 	var message model.ApiResponse
 	err = json.NewDecoder(registrationResp.Body).Decode(&message)
 	if err != nil {
+		log.Printf("Error while decoding: %s\n", err)
 		return "", err
 	}
 

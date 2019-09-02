@@ -11,7 +11,7 @@ import (
 
 // This is the implementation of the webhook for readings notifications
 func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Callback Called!")
+	log.Println("Callback Called!")
 
 	var data service.CallbackResponseData
 	err := json.NewDecoder(r.Body).Decode(&data)
