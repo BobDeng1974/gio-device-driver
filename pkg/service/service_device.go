@@ -16,7 +16,7 @@ type CallbackResponseData struct {
 	Reading      model.Reading `json:"reading"`
 }
 type DeviceService struct {
-	url *url.URL
+	url string
 }
 
 func (ds *DeviceService) Register(id string, roomName string) (*model.GioDevice, error) {
@@ -105,11 +105,14 @@ func NewDeviceService() (*DeviceService, error) {
 		u := fmt.Sprintf("http://%s:%s", serviceHost, servicePort)
 		log.Printf("DeviceService URL: %s\n", u)
 
-		serviceUrl, err := url.Parse(u)
+		_, err := url.Parse(u)
 		if err != nil {
 			return nil, err
 		}
-		deviceServiceInstance = &DeviceService{serviceUrl}
+
+		deviceServiceInstance = &DeviceService{
+			url: u,
+		}
 	}
 
 	return deviceServiceInstance, nil

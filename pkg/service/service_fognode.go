@@ -51,7 +51,7 @@ func NewFogNode() (*FogNode, error) {
 	fogNodeHost := os.Getenv("FOG_NODE_HOST")
 	fogNodePort := os.Getenv("FOG_NODE_PORT")
 
-	if deviceServiceInstance == nil {
+	if fogNodeInstance == nil {
 		u := fmt.Sprintf("http://%s:%s", fogNodeHost, fogNodePort)
 		log.Printf("FogNode URL: %s\n", u)
 

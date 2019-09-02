@@ -16,9 +16,9 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Requesting triggering for action %s on device %s\n", actionName, deviceId)
 
-	srv, _ := service.NewFogNode()
+	fogNode, _ := service.NewFogNode()
 
-	device, err := srv.GetDevice(deviceId)
+	device, err := fogNode.GetDevice(deviceId)
 	if err != nil {
 		log.Printf("Cannot get device with ID %s: %s\n", deviceId, err.Error())
 		errorHandler(w, http.StatusNotFound, err.Error())
@@ -41,7 +41,7 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Action UUID found: %s\n", actionUUID)
 
-	err = srv.TriggerAction(device, actionUUID)
+	err = fogNode.TriggerAction(device, actionUUID)
 	if err != nil {
 		log.Printf("Cannot perform action %s (UUID: %s)\n", actionName, actionUUID)
 		errorHandler(w, http.StatusBadRequest, err.Error())
