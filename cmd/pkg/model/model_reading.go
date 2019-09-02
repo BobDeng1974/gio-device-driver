@@ -8,10 +8,10 @@ type GioDevice struct {
 }
 
 type Reading struct {
-	ID    string      `json:"id,omitempty"`
-	Name  string      `json:"name"`
-	Value interface{} `json:"value"` // It can contains any value
-	Unit  string      `json:"unit"`
+	ID    string `json:"id,omitempty"`
+	Name  string `json:"name"`
+	Value string `json:"value"` // It can contains any value
+	Unit  string `json:"unit"`
 }
 
 type Room struct {

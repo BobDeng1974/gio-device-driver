@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"gio-device-driver/cmd/pkg/devices"
 	"gio-device-driver/cmd/pkg/model"
 	"gio-device-driver/cmd/pkg/service"
 	"log"
@@ -22,6 +23,9 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Data received: %v\n", data)
 
+	// Process data
+	processed := processData(data)
+
 	// Send data to Device Service
 	srv, _ := service.NewDeviceService()
 
@@ -31,7 +35,7 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = srv.SendData(device, &data.Reading)
+	err = srv.SendData(device, processed)
 	if err != nil {
 		errorHandler(w, http.StatusInternalServerError, fmt.Sprintf("cannot send data to DeviceService: %s", err))
 		return
@@ -50,4 +54,15 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Data sent successfully")
+}
+
+func processData(data service.CallbackResponseData) *model.Reading {
+	// Check SmartVase characteristics
+	for _, char := range devices.SmartVaseCharacteristics {
+		if char.UUID == data.Reading.ID {
+			return char.Process(&data.Reading)
+		}
+	}
+
+	return nil
 }
