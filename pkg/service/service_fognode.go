@@ -11,7 +11,7 @@ import (
 )
 
 type FogNode struct {
-	url *url.URL
+	url string
 }
 
 func (fogNode *FogNode) GetDevice(deviceId string) (*model.FogNodeDevice, error) {
@@ -54,11 +54,14 @@ func NewFogNode() (*FogNode, error) {
 		u := fmt.Sprintf("http://%s:%s", fogNodeHost, fogNodePort)
 		log.Printf("FogNode URL: %s\n", u)
 
-		serviceUrl, err := url.Parse(u)
+		_, err := url.Parse(u)
 		if err != nil {
 			return nil, err
 		}
-		fogNodeInstance = &FogNode{serviceUrl}
+
+		fogNodeInstance = &FogNode{
+			url: u,
+		}
 	}
 
 	return fogNodeInstance, nil
