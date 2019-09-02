@@ -15,6 +15,7 @@ type FogNode struct {
 }
 
 func (fogNode *FogNode) GetDevice(deviceId string) (*model.FogNodeDevice, error) {
+	log.Printf("fognode: %s- deviceid: %s", fogNode, deviceId)
 	devicesUrl := fmt.Sprintf("%s/devices/%s", fogNode.url, deviceId)
 	resp, err := http.Get(devicesUrl)
 	if err != nil {
@@ -34,7 +35,7 @@ func (fogNode *FogNode) GetDevice(deviceId string) (*model.FogNodeDevice, error)
 
 func (fogNode *FogNode) TriggerAction(device *model.FogNodeDevice, actionName string) error {
 	devicesUrl := fmt.Sprintf("%s/devices/%s/actions/%s", fogNode.url, device.ID, actionName)
-	resp, err := http.Get(devicesUrl)
+	resp, err := http.Post(devicesUrl, "application/json", nil)
 	if err != nil {
 		return err
 	}
