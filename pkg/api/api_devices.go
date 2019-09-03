@@ -60,8 +60,6 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-
-	log.Println("Action performed successfully")
 }
 
 // Get the UUID of the action with a given name

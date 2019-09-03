@@ -46,7 +46,7 @@ docker run -it --port 5004:8080 gio-device-driver:latest
 
 ## REST API
 
-- POST /callbacks/readings: callback endpoint. Called by the gio-fog-node tools to notify the creation of a new reading.
+- POST /callbacks/readings: endpoint for device readings callbacks. Called by the Fog Node tools to notify a new reading produce by a connected device.
 
     Example body:
     
@@ -61,6 +61,17 @@ docker run -it --port 5004:8080 gio-device-driver:latest
   }
   ```
 
+    Example response:
+    
+     ```json
+      {
+        "status": 200,
+        "message": "Done"
+      }
+     ```
+  
+ - POST /devices/{deviceId}/actions/{actionName}: triggers an action on the specified device. The device is identified by its MAC address. Action name is the symbolic name associated to the action. The Device Driver will maps the name with the proper BLE characteristic UUID.
+   
     Example response:
     
      ```json
