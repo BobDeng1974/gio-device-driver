@@ -56,7 +56,8 @@ docker run -it --port 5004:8080 gio-device-driver:latest
     "reading": {
       "name": "temperature",
       "value": "23",
-      "unit": "C°"
+      "unit": "C°",
+      "creation_timestamp": "yyyyyy"  
     }
   }
   ```
