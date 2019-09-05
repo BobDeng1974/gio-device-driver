@@ -22,8 +22,9 @@ const (
 )
 
 func errorHandler(w http.ResponseWriter, status int, message string) {
+	log.Printf("Error handler: (%d) %s", status, message)
 	r := model.ApiResponse{Code: status, Message: message}
-	w.WriteHeader(int(status))
+	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	if err := json.NewEncoder(w).Encode(r); err != nil {
 		log.Println(err)
