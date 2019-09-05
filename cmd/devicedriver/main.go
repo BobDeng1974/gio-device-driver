@@ -107,7 +107,7 @@ func checkVariables() {
 	varNames := []string{"FOG_NODE_HOST", "FOG_NODE_PORT", "DEVICE_SERVICE_HOST", "DEVICE_SERVICE_PORT", "CALLBACK_HOST", "CALLBACK_PORT"}
 	for _, name := range varNames {
 		if v := os.Getenv(name); v == "" {
-			panic(fmt.Sprintf("%s not set", v))
+			panic(fmt.Sprintf("%s not set", name))
 		}
 	}
 }
