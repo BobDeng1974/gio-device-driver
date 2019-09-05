@@ -11,17 +11,19 @@ When the webhook is called, it filters and cleans the data received. Then, clean
 ## Run
 
 The service requires a few data to successfully start:
-Two options:
 
-- --host: specifies the host in which the tool is running
-- --port: specifies the host used by the service to expose its callbacks endpoints.
+Options:
 
-Four environment variables:
+- --port: specifies the host used by the service to expose its callbacks endpoints. Default value is 8080
+
+Environment variables:
 
 - FOG_NODE_HOST: specifies the host in which the gio-fog-node tool is running
 - FOG_NODE_PORT: specifies the port in which the gio-fog-node tool is running
 - DEVICE_SERVICE_HOST: specifies the host in which the gio-device-ms service is running
 - DEVICE_SERVICE_PORT: specifies the port in which the gio-device-ms service is running
+- CALLBACK_HOST: specifies the host used for composing the callback url
+- CALLBACK_PORT: specifies the port used for composing the callback url
 
 ### Go
 `gio-device-driver` is developed as a Go module.
@@ -30,6 +32,8 @@ export FOG_NODE_HOST=localhost
 export FOG_NODE_PORT=5002
 export DEVICE_SERVICE_HOST=localhost
 export DEVICE_SERVICE_PORT=5001
+export CALLBACK_HOST=localhost
+export CALLBACK_PORT=5006
 
 go build -o devicedriver cmd/devicedriver/main.go
 

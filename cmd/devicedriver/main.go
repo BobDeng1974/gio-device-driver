@@ -17,12 +17,11 @@ import (
 func main() {
 	checkVariables()
 
-	host := flag.String("host", "localhost", "IP address of the current host")
 	port := flag.Int("port", 8080, "port to be used")
 
 	flag.Parse()
 
-	go registerService(*host, *port)
+	go registerService()
 
 	log.Printf("Server started on port %d\n", *port)
 
@@ -33,12 +32,12 @@ func main() {
 	log.Fatal(http.ListenAndServe(p, router))
 }
 
-func registerService(host string, port int) {
+func registerService() {
 	retries := 10
 
 	for retries > 0 {
 		log.Printf("Try to register to FogNode (trial: %d)\n", retries)
-		callbackUuid, err := registerCallback(host, port)
+		callbackUuid, err := registerCallback()
 		if err == nil {
 			log.Printf("Callback UUID: %s\n", callbackUuid)
 			return
@@ -55,18 +54,24 @@ func registerService(host string, port int) {
 	panic("Cannot register to FogNode!")
 }
 
-func registerCallback(host string, port int) (string, error) {
+func registerCallback() (string, error) {
+	callbackHost := os.Getenv("CALLBACK_HOST")
+	callbackPort := os.Getenv("CALLBACK_PORT")
+
 	fogNodeHost := os.Getenv("FOG_NODE_HOST")
 	fogNodePort := os.Getenv("FOG_NODE_PORT")
 
 	fogNodeUrl := fmt.Sprintf("http://%s:%s", fogNodeHost, fogNodePort)
 
-	_, err := url.Parse(fogNodeUrl)
-	if err != nil {
+	if _, err := url.Parse(fogNodeUrl); err != nil {
 		return "", err
 	}
 
-	callbackUrl := fmt.Sprintf("http://%s:%d%s", host, port, api.CallbackEndpointPath)
+	callbackUrl := fmt.Sprintf("http://%s:%s%s", callbackHost, callbackPort, api.CallbackEndpointPath)
+	if _, err := url.Parse(callbackUrl); err != nil {
+		return "", err
+	}
+
 	callbackData := struct {
 		Url string `json:"url"`
 	}{
@@ -99,17 +104,10 @@ func registerCallback(host string, port int) (string, error) {
 }
 
 func checkVariables() {
-	if fogNodeHost := os.Getenv("FOG_NODE_HOST"); fogNodeHost == "" {
-		panic("FOG_NODE_HOST not set.")
-	}
-	if fogNodePort := os.Getenv("FOG_NODE_PORT"); fogNodePort == "" {
-		panic("FOG_NODE_PORT not set.")
-	}
-
-	if DeviceServiceHost := os.Getenv("DEVICE_SERVICE_HOST"); DeviceServiceHost == "" {
-		panic("DEVICE_SERVICE_HOST not set.")
-	}
-	if DeviceServicePort := os.Getenv("DEVICE_SERVICE_PORT"); DeviceServicePort == "" {
-		panic("DEVICE_SERVICE_PORT not set.")
+	varNames := []string{"FOG_NODE_HOST", "FOG_NODE_PORT", "DEVICE_SERVICE_HOST", "DEVICE_SERVICE_PORT", "CALLBACK_HOST", "CALLBACK_PORT"}
+	for _, name := range varNames {
+		if v := os.Getenv(name); v == "" {
+			panic(fmt.Sprintf("%s not set", v))
+		}
 	}
 }
