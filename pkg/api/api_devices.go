@@ -2,13 +2,33 @@ package api
 
 import (
 	"encoding/json"
-	"gio-device-driver/pkg/devices"
 	"gio-device-driver/pkg/model"
 	"gio-device-driver/pkg/service"
+	"gio-device-driver/pkg/smartvase"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
+
+func GetDevices(w http.ResponseWriter, r *http.Request) {
+	log.Println("Getting all connected devices")
+
+	fogNode, _ := service.NewFogNode()
+
+	devices, err := fogNode.GetDevices()
+	if err != nil {
+		errorHandler(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	code := http.StatusOK
+	w.WriteHeader(code)
+
+	err = json.NewEncoder(w).Encode(devices)
+	if err != nil {
+		log.Println(err)
+	}
+}
 
 func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -64,7 +84,7 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 
 // Get the UUID of the action with a given name
 func findActionUUID(actionName string) string {
-	for _, char := range devices.SmartVaseCharacteristics {
+	for _, char := range smartvase.SmartVaseCharacteristics {
 		if actionName == char.Name {
 			return char.UUID
 		}

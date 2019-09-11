@@ -1,4 +1,4 @@
-package devices
+package smartvase
 
 import (
 	"gio-device-driver/pkg/model"

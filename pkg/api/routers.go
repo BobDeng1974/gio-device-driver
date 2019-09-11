@@ -59,6 +59,14 @@ var routes = Routes{
 		OnReadingCreated,
 	},
 
+	// Returns devices connected to the relative FogNode
+	Route{
+		"GetDevices",
+		[]string{http.MethodGet},
+		"/devices",
+		GetDevices,
+	},
+
 	// Trigger for actions
 	Route{
 		"TriggerAction",

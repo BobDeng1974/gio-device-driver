@@ -16,6 +16,24 @@ type FogNode struct {
 	url string
 }
 
+func (fogNode *FogNode) GetDevices() ([]model.FogNodeDevice, error) {
+	devicesUrl := fmt.Sprintf("%s/devices", fogNode.url)
+	resp, err := http.Get(devicesUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	var devices []model.FogNodeDevice
+	err = json.NewDecoder(resp.Body).Decode(&devices)
+	if err != nil {
+		return nil, err
+	}
+
+	return devices, nil
+}
+
 func (fogNode *FogNode) GetDevice(deviceId string) (*model.FogNodeDevice, error) {
 	log.Printf("fognode: %s- deviceid: %s", fogNode, deviceId)
 	devicesUrl := fmt.Sprintf("%s/devices/%s", fogNode.url, deviceId)
