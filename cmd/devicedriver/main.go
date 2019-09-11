@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"gio-device-driver/pkg/api"
-	"gio-device-driver/pkg/model"
+	"gio-device-driver/pkg/service"
 	"log"
 	"net/http"
 	"net/url"
@@ -32,6 +30,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(p, router))
 }
 
+// Register the service to the FogNode for notifications
 func registerService() {
 	retries := 10
 
@@ -54,57 +53,31 @@ func registerService() {
 	panic("Cannot register to FogNode!")
 }
 
+// Register callback to FogNode
 func registerCallback() (string, error) {
 	callbackHost := os.Getenv("CALLBACK_HOST")
 	callbackPort := os.Getenv("CALLBACK_PORT")
-
-	fogNodeHost := os.Getenv("FOG_NODE_HOST")
-	fogNodePort := os.Getenv("FOG_NODE_PORT")
-
-	fogNodeUrl := fmt.Sprintf("http://%s:%s", fogNodeHost, fogNodePort)
-
-	if _, err := url.Parse(fogNodeUrl); err != nil {
-		return "", err
-	}
 
 	callbackUrl := fmt.Sprintf("http://%s:%s%s", callbackHost, callbackPort, api.CallbackEndpointPath)
 	if _, err := url.Parse(callbackUrl); err != nil {
 		return "", err
 	}
 
-	callbackData := struct {
-		Url string `json:"url"`
-	}{
-		Url: callbackUrl,
-	}
-
-	dataJson, _ := json.Marshal(callbackData)
-
-	registrationUrl := fmt.Sprintf("%s/callbacks", fogNodeUrl)
-
-	log.Printf("FogNode URL: %s\n", fogNodeUrl)
-	log.Printf("callbackUrl: %s\n", callbackUrl)
-	log.Printf("registrationUrl: %s\n", registrationUrl)
-
-	registrationResp, err := http.Post(registrationUrl, "application/json", bytes.NewBuffer(dataJson))
+	fogNode, err := service.NewFogNode()
 	if err != nil {
-		log.Printf("Error while registrering device: %s\n", err)
 		return "", err
 	}
 
-	var message model.ApiResponse
-	err = json.NewDecoder(registrationResp.Body).Decode(&message)
+	uuid, err := fogNode.RegisterCallback(callbackUrl)
 	if err != nil {
-		log.Printf("Error while decoding: %s\n", err)
 		return "", err
 	}
 
-	// Return the UUID
-	return message.Message, nil
+	return uuid, nil
 }
 
 func checkVariables() {
-	varNames := []string{"FOG_NODE_HOST", "FOG_NODE_PORT", "DEVICE_SERVICE_HOST", "DEVICE_SERVICE_PORT", "CALLBACK_HOST", "CALLBACK_PORT"}
+	varNames := []string{"FOG_NODE_PORT", "DEVICE_SERVICE_HOST", "DEVICE_SERVICE_PORT", "CALLBACK_HOST", "CALLBACK_PORT"}
 	for _, name := range varNames {
 		if v := os.Getenv(name); v == "" {
 			panic(fmt.Sprintf("%s not set", name))
