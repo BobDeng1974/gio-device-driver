@@ -84,7 +84,7 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 
 // Get the UUID of the action with a given name
 func findActionUUID(actionName string) string {
-	for _, char := range smartvase.SmartVaseCharacteristics {
+	for _, char := range smartvase.Characteristics {
 		if actionName == char.Name {
 			return char.UUID
 		}

@@ -31,7 +31,7 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 	// Send data to Device Service
 	srv, _ := service.NewDeviceService()
 
-	device, err := srv.Register(data.PeripheralID, "default")
+	device, err := srv.Register(data.PeripheralID)
 	if err != nil {
 		errorHandler(w, http.StatusInternalServerError, fmt.Sprintf("error while registering device: %s", err))
 		return
@@ -58,7 +58,7 @@ func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
 
 func processData(data service.CallbackResponseData) *model.Reading {
 	// Check SmartVase characteristics
-	for _, char := range smartvase.SmartVaseCharacteristics {
+	for _, char := range smartvase.Characteristics {
 		if char.UUID == data.Reading.Name {
 			return char.Process(&data.Reading)
 		}

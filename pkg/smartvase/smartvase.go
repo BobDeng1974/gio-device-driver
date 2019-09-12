@@ -25,7 +25,7 @@ func (blec BLECharacteristic) String() string {
 	return blec.UUID
 }
 
-var SmartVaseCharacteristics = [...]BLECharacteristic{
+var Characteristics = [...]BLECharacteristic{
 	{
 		UUID: "02759250523e493b8f941765effa1b20",
 		Name: "light",

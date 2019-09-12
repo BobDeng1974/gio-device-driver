@@ -11,18 +11,23 @@ import (
 	"os"
 )
 
+const (
+	defaultRoomName = "default"
+)
+
 type CallbackResponseData struct {
 	PeripheralID string        `json:"peripheral_id"`
 	Reading      model.Reading `json:"reading"`
 }
 type DeviceService struct {
-	url string
+	url      string
+	roomName string
 }
 
-func (ds *DeviceService) Register(id string, roomName string) (*model.GioDevice, error) {
+func (ds *DeviceService) Register(id string) (*model.GioDevice, error) {
 	// Create the room
 	roomData := model.Room{
-		Name: roomName,
+		Name: ds.roomName,
 	}
 
 	roomBody, _ := json.Marshal(roomData)
@@ -101,9 +106,15 @@ func NewDeviceService() (*DeviceService, error) {
 	serviceHost := os.Getenv("DEVICE_SERVICE_HOST")
 	servicePort := os.Getenv("DEVICE_SERVICE_PORT")
 
+	roomName := os.Getenv("DEVICE_SERVICE_ROOM_NAME")
+	if roomName == "" {
+		roomName = defaultRoomName
+	}
+
 	if deviceServiceInstance == nil {
 		u := fmt.Sprintf("http://%s:%s", serviceHost, servicePort)
 		log.Printf("DeviceService URL: %s\n", u)
+		log.Printf("Room name: %s\n", roomName)
 
 		_, err := url.Parse(u)
 		if err != nil {
@@ -111,7 +122,8 @@ func NewDeviceService() (*DeviceService, error) {
 		}
 
 		deviceServiceInstance = &DeviceService{
-			url: u,
+			url:      u,
+			roomName: roomName,
 		}
 	}
 
