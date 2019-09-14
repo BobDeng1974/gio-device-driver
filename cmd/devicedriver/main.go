@@ -14,6 +14,8 @@ import (
 
 const (
 	fogNodeRegistrationRetries = 20
+	callbackRegistrationDelay  = 5 * time.Second
+	heartbeatDelay             = 2 * time.Minute
 )
 
 func main() {
@@ -23,7 +25,12 @@ func main() {
 
 	flag.Parse()
 
-	go registerService()
+	err := registerService()
+	if err != nil {
+		panic(err)
+	}
+
+	go startHeartbeat()
 
 	log.Printf("Server started on port %d\n", *port)
 
@@ -35,7 +42,7 @@ func main() {
 }
 
 // Register the service to the FogNode for notifications
-func registerService() {
+func registerService() error {
 	retries := fogNodeRegistrationRetries
 
 	for retries > 0 {
@@ -43,7 +50,6 @@ func registerService() {
 		callbackUuid, err := registerCallback()
 		if err == nil {
 			log.Printf("Callback UUID: %s\n", callbackUuid)
-			return
 		}
 
 		log.Println(err)
@@ -51,10 +57,29 @@ func registerService() {
 		retries--
 
 		// Sleep before try again
-		time.Sleep(5 * time.Second)
+		time.Sleep(callbackRegistrationDelay)
 	}
 
-	panic("Cannot register to FogNode!")
+	return fmt.Errorf("cannot register to FogNode")
+}
+
+// This function periodically checks the status of the FogNode and tries to register again the callback in case of service unavailable.
+func startHeartbeat() {
+	log.Println("Heartbeat started")
+
+	ticker := time.NewTicker(heartbeatDelay)
+	go func() {
+		for {
+			// Wait for tick
+			<-ticker.C
+
+			log.Println("Checking FogNode")
+			err := registerService()
+			if err != nil {
+				panic(err)
+			}
+		}
+	}()
 }
 
 // Register callback to FogNode
