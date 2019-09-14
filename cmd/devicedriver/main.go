@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+const (
+	fogNodeRegistrationRetries = 20
+)
+
 func main() {
 	checkVariables()
 
@@ -32,7 +36,7 @@ func main() {
 
 // Register the service to the FogNode for notifications
 func registerService() {
-	retries := 10
+	retries := fogNodeRegistrationRetries
 
 	for retries > 0 {
 		log.Printf("Try to register to FogNode (trial: %d)\n", retries)

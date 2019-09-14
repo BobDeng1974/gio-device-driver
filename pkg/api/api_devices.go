@@ -30,10 +30,25 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getActionData(r *http.Request) *model.ActionData {
+	var actionData model.ActionData
+	err := json.NewDecoder(r.Body).Decode(&actionData)
+	if err != nil {
+		return nil
+	}
+
+	return &actionData
+}
+
 func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	deviceId := vars["deviceId"]
 	actionName := vars["actionName"]
+
+	actionData := getActionData(r)
+	if actionData == nil {
+		log.Printf("WARNING: no data passed for action %s", actionName)
+	}
 
 	log.Printf("Requesting triggering for action %s on device %s\n", actionName, deviceId)
 
@@ -62,7 +77,7 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Action UUID found: %s\n", actionUUID)
 
-	err = fogNode.TriggerAction(device, actionUUID)
+	err = fogNode.TriggerAction(device, actionUUID, actionData)
 	if err != nil {
 		log.Printf("Cannot perform action %s (UUID: %s)\n", actionName, actionUUID)
 		errorHandler(w, http.StatusBadRequest, err.Error())

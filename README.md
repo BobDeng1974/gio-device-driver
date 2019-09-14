@@ -50,34 +50,44 @@ docker run -it --port 5004:8080 gio-device-driver:latest
 
     Example body:
     
-  ```json
-  {
+```json
+{
     "peripheral_id": "xx:xx:xx:xx",
     "reading": {
-      "name": "temperature",
-      "value": "23",
-      "unit": "C°",
-      "creation_timestamp": "yyyyyy"  
+        "name": "temperature",
+        "value": "23",
+        "unit": "C°",
+        "creation_timestamp": "yyyyyy"  
     }
-  }
-  ```
+}
+```
 
     Example response:
     
-     ```json
-      {
-        "status": 200,
-        "message": "Done"
-      }
-     ```
+```json
+{
+    "status": 200,
+    "message": "Done"
+}
+```
   
- - POST /devices/{deviceId}/actions/{actionName}: triggers an action on the specified device. The device is identified by its MAC address. Action name is the symbolic name associated to the action. The Device Driver will maps the name with the proper BLE characteristic UUID.
+ - POST /devices/{deviceId}/actions/{actionName}: triggers an action on the specified device.
+    The device is identified by its MAC address. Action name is the symbolic name associated to the action.
+    The Device Driver will maps the name with the proper BLE characteristic UUID.
+    It allows send a value with the request.
    
+    Example body:
+```json
+{
+    "value": "22"
+}
+```
+
     Example response:
     
-     ```json
-      {
-        "status": 200,
-        "message": "Done"
-      }
-     ```
+```json
+{
+    "status": 200,
+    "message": "Done"
+}
+```

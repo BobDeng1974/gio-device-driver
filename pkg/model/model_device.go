@@ -30,3 +30,7 @@ type BLECharacteristic struct {
 	UUID string `json:"uuid"`
 	Name string `json:"name"`
 }
+
+type ActionData struct {
+	Value int `json:"value"`
+}

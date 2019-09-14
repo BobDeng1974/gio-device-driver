@@ -53,14 +53,26 @@ func (fogNode *FogNode) GetDevice(deviceId string) (*model.FogNodeDevice, error)
 	return &device, nil
 }
 
-func (fogNode *FogNode) TriggerAction(device *model.FogNodeDevice, actionName string) error {
-	devicesUrl := fmt.Sprintf("%s/devices/%s/actions/%s", fogNode.url, device.ID, actionName)
-	resp, err := http.Post(devicesUrl, "application/json", nil)
+func getActionBodyData(data *model.ActionData) *bytes.Buffer {
+	if data != nil {
+		body, err := json.Marshal(data)
+		if err == nil {
+			return bytes.NewBuffer(body)
+		}
+	}
+	return nil
+}
+
+func (fogNode *FogNode) TriggerAction(device *model.FogNodeDevice, actionName string, actionData *model.ActionData) error {
+	u := fmt.Sprintf("%s/devices/%s/actions/%s", fogNode.url, device.ID, actionName)
+
+	bodyData := getActionBodyData(actionData)
+	resp, err := utils.DoPost(u, bodyData)
 	if err != nil {
 		return err
 	}
 
-	defer resp.Body.Close()
+	_ = resp.Body.Close()
 
 	return nil
 }
