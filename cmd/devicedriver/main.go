@@ -50,6 +50,7 @@ func registerService() error {
 		callbackUuid, err := registerCallback()
 		if err == nil {
 			log.Printf("Callback UUID: %s\n", callbackUuid)
+			return nil
 		}
 
 		log.Println(err)
