@@ -4,9 +4,10 @@ forwarding the result to the Giò Device service.
 
 ## How does it works
 
-The service starts registering a webhook (`http://<host>:<port>/callbacks/readings`) with the gio-fog-node tools to be notified when a new reading is produced by a connected device.
+The service starts registering a webhook (`http://<host>:<port>/callbacks/readings`) with the Fog Node tools to be notified when a new reading is produced by a connected device.
+After the registration, a *heartbeat* check periodically the registration of the callback with the Fog Node.
 
-When the webhook is called, it filters and cleans the data received. Then, cleaned data are sent to the device service.
+When the webhook is called, it filters and cleans the data received. Then, cleaned data are sent to the Device Microservice.
 
 ## Run
 
