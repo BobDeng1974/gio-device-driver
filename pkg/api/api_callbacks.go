@@ -13,6 +13,8 @@ import (
 // This is the implementation of the webhook for readings notifications
 // This function is called when the FogNode creates a new Reading and notify this driver by an http call.
 func OnReadingCreated(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
 	var data service.CallbackResponseData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {

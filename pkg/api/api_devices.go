@@ -13,6 +13,8 @@ import (
 func GetDevices(w http.ResponseWriter, r *http.Request) {
 	log.Println("Getting all connected devices")
 
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
 	fogNode, _ := service.NewFogNode()
 
 	devices, err := fogNode.GetDevices()
@@ -44,6 +46,8 @@ func TriggerAction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	deviceId := vars["deviceId"]
 	actionName := vars["actionName"]
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	actionData := getActionData(r)
 	if actionData == nil {
