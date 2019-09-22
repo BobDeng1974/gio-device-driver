@@ -30,11 +30,12 @@ Environment variables:
 export FOG_NODE_PORT=5002
 export DEVICE_SERVICE_HOST=localhost
 export DEVICE_SERVICE_PORT=5001
+export CALLBACK_HOST=localhost
 export CALLBACK_PORT=5006
 
 go build -o devicedriver cmd/devicedriver/main.go
 
-./devicedriver -host localhost -port 5004
+./devicedriver -port 5004
 ```
 
 ### Using Docker
