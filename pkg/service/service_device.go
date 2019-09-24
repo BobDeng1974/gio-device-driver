@@ -14,14 +14,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"gio-device-driver/pkg/model"
+	"github.com/patrickmn/go-cache"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 const (
-	defaultRoomName = "default"
+	defaultRoomName        = "default"
+	defaultCacheExpiration = 5 * time.Minute
+	defaultCacheCleanup    = 10 * time.Minute
 )
 
 // A CallbackResponseData represents data sent with a callback
@@ -36,8 +40,17 @@ type DeviceService struct {
 	roomName string
 }
 
+var deviceCache = cache.New(defaultCacheExpiration, defaultCacheCleanup)
+
 // Registers a new device
 func (ds *DeviceService) Register(id string) (*model.GioDevice, error) {
+	// Check cache first
+	if d, exists := deviceCache.Get(id); exists {
+		log.Printf("Device %s from cache\n", id)
+		x := d.(model.GioDevice)
+		return &x, nil
+	}
+
 	// Create the room
 	roomData := model.Room{
 		Name: ds.roomName,
@@ -87,6 +100,9 @@ func (ds *DeviceService) Register(id string) (*model.GioDevice, error) {
 	// Take the id from the response
 	var device model.GioDevice
 	_ = json.NewDecoder(deviceResponse.Body).Decode(&device)
+
+	// Add to device cache
+	deviceCache.Set(id, device, cache.DefaultExpiration)
 
 	return &device, nil
 }
